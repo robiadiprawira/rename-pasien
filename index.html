@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rename File Pasien</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Rename File Pasien</h1>
+  <p>Semua proses berjalan di komputer ini. Tidak ada data yang dikirim ke internet atau disimpan di server.</p>
+</header>
+
+<main>
+  <!-- Langkah 1 -->
+  <section class="card" id="step1">
+    <h2><span class="badge">1</span> PDF referensi</h2>
+    <p class="hint">PDF berisi daftar pasien (No Kunjungan dan Nama). Nomor urut diambil dari urutan baris, dari atas ke bawah. PDF hasil scan juga bisa dibaca (dengan OCR).</p>
+    <input type="file" id="refInput" accept="application/pdf,.pdf">
+    <div id="refStatus" class="status"></div>
+    <button id="ocrBtn" type="button" hidden>Hasil salah? Baca ulang dengan OCR</button>
+
+    <div id="mapping" hidden>
+      <h3>Cek pembacaan kolom</h3>
+      <p class="hint">Pastikan setiap kolom diberi peran yang benar. Kalau salah, ubah lewat menu di atas kolom.</p>
+      <label class="inline">Jarak antar kolom
+        <input type="number" id="gapInput" value="8" min="2" max="40" step="1">
+        <span class="hint">(naikkan jika dua kolom menyatu, turunkan jika satu nama terpecah)</span>
+      </label>
+      <div class="tablewrap"><table id="mapTable"></table></div>
+      <div id="patientCount" class="status"></div>
+    </div>
+
+    <div id="patientsBox" hidden>
+      <h3>Data pasien yang terbaca</h3>
+      <p class="hint">Bisa dikoreksi langsung: klik isian lalu ubah. Kotak merah menandakan nilai yang mencurigakan.</p>
+      <div id="patientNote" class="status"></div>
+      <details id="pdfPreview" hidden open>
+        <summary>Lihat PDF asli (untuk mencocokkan dengan tabel)</summary>
+        <div id="pdfPreviewImgs" class="pvimgs"></div>
+      </details>
+      <button id="ackBtn" type="button" hidden>Semua yang merah sudah saya cek</button>
+      <div class="tablewrap"><table id="patientsTable"></table></div>
+    </div>
+  </section>
+
+  <!-- Langkah 2 -->
+  <section class="card" id="step2">
+    <h2><span class="badge">2</span> File pasien yang akan di-rename</h2>
+    <p class="hint">Nama file harus berisi nama pasien, misalnya <code>Budi Santoso.pdf</code>. Boleh pilih banyak file sekaligus.</p>
+    <input type="file" id="filesInput" accept="application/pdf,.pdf" multiple>
+    <div id="filesStatus" class="status"></div>
+  </section>
+
+  <!-- Langkah 3 -->
+  <section class="card" id="step3" hidden>
+    <h2><span class="badge">3</span> Preview &amp; konfirmasi</h2>
+    <label class="inline">Format nama baru
+      <input type="text" id="templateInput" value="{no}. {kunjungan}" size="28">
+      <span class="hint">Pakai <code>{no}</code>, <code>{kunjungan}</code>, <code>{nama}</code></span>
+    </label>
+
+    <div id="summary" class="summary"></div>
+    <div class="tablewrap"><table id="previewTable"></table></div>
+
+    <div id="unusedBox" hidden>
+      <h3>Pasien di PDF yang belum punya file</h3>
+      <ul id="unusedList"></ul>
+    </div>
+
+    <div class="actions">
+      <button id="zipBtn" class="primary">Unduh hasil (ZIP)</button>
+      <button id="folderBtn">Simpan langsung ke folder…</button>
+    </div>
+    <p class="hint" id="folderHint"></p>
+    <div id="resultMsg" class="status"></div>
+  </section>
+</main>
+
+<!-- Semua library lokal: tidak butuh internet -->
+<script src="lib/pdf.min.js"></script>
+<script src="lib/pdf.worker.min.js"></script>
+<script src="lib/jszip.min.js"></script>
+<script src="lib/tesseract/tesseract.min.js"></script>
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
